@@ -22,6 +22,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Plugin(
         id = "simplevotelistener",
@@ -58,10 +59,6 @@ public class Simplevotelistener {
         try {
             loadConfig();
             this.executeCommandsOnVote = config.getNode("commands").getList(TypeToken.of(String.class));
-            for (String command :
-                    this.executeCommandsOnVote) {
-                System.out.println("Command: " + command);
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,11 +70,11 @@ public class Simplevotelistener {
     }
 
     @Listener
-    public synchronized void onVote(VotifierEvent event) {
+    public void onVote(VotifierEvent event) {
         Vote vote = event.getVote();
-        this.logger.info(vote.toString());
-        if (Sponge.getGame().getServer().getPlayer(vote.getUsername()).isPresent()) {
-            this.executeConfiguredCommands(Sponge.getServer().getPlayer(vote.getUsername()).get());
+        Optional<Player> optPlayer = Sponge.getServer().getPlayer(vote.getUsername());
+        if (optPlayer.isPresent()) {
+            this.executeConfiguredCommands(optPlayer.get());
         } else {
             this.logger.info("Player: " + vote.getUsername() + " was not online, or something went wrong!");
         }
@@ -101,7 +98,8 @@ public class Simplevotelistener {
         for (String command :
                 this.executeCommandsOnVote) {
             Sponge.getCommandManager().process(Sponge.getServer().getConsole(), command
-                    .replace("%player%", player.getName()));
+                    .replace("%player%", player.getName())
+                    .replace("%playeruuid%", player.getUniqueId().toString()));
         }
     }
 }

@@ -7,10 +7,11 @@ That's all there is to it! As simple and lightweight as possible.
 
 # Config file
 ``` 
-Params available:  %player%
+Params available:  %player% %playeruuid%
    commands = [
      "adminpay %player% 250",
      "title %player% title {\"text\":\"Thanks for voting!\",\"bold\":true,\"color\":\"red\"}"
    ]
 ```
-The parameter %player% is available to target the player that voted.
+The parameter %player% is available to target the player that voted.  
+The parameter %playeruuid% is available to target the player by uuid that voted.
