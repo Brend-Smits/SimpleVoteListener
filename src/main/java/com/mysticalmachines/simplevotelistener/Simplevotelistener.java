@@ -59,6 +59,7 @@ public class Simplevotelistener {
         try {
             loadConfig();
             this.executeCommandsOnVote = config.getNode("commands").getList(TypeToken.of(String.class));
+            this.logger.info("Loaded " + this.executeCommandsOnVote.size() + " commands from the configuration file.");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -79,6 +80,7 @@ public class Simplevotelistener {
             this.logger.info("Player: " + vote.getUsername() + " was not online, or something went wrong!");
         }
     }
+
     /**
      * Load the default config file, simplevotelistener.conf.
      */
@@ -95,11 +97,13 @@ public class Simplevotelistener {
     }
 
     private void executeConfiguredCommands(Player player) {
-        for (String command :
-                this.executeCommandsOnVote) {
-            Sponge.getCommandManager().process(Sponge.getServer().getConsole(), command
-                    .replace("%player%", player.getName())
-                    .replace("%playeruuid%", player.getUniqueId().toString()));
+        if (this.executeCommandsOnVote != null) {
+            for (String command :
+                    this.executeCommandsOnVote) {
+                Sponge.getCommandManager().process(Sponge.getServer().getConsole(), command
+                        .replace("%player%", player.getName())
+                        .replace("%playeruuid%", player.getUniqueId().toString()));
+            }
         }
     }
 }
